@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:simple_video.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ic="using:FluentIcons.Avalonia"
+        mc:Ignorable="d"
+        d:DesignWidth="854"
+        d:DesignHeight="480"
+        Width="854"
+        Height="480"
+        MinWidth="472"
+        MinHeight="240"
+        x:Class="simple_video.Views.PreviewWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="プレビューウィンドウ">
+
+        <Design.DataContext>
+            <vm:MainWindowViewModel/>
+        </Design.DataContext>
+
+        <Grid RowDefinitions="*,Auto">
+            <Border Grid.Row="0">
+                <Grid>
+                    <Image Source="{Binding PreviewImage}"
+                            Stretch="Uniform"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"/>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Button Command="{Binding TogglePlaybackCommand}">
+                    <ic:FluentIcon Icon="{Binding PlayPauseText}" />
+                </Button>
+                <Slider Grid.Column="1"
+                        Minimum="0"
+                        Maximum="{Binding DurationSeconds}"
+                        Value="{Binding CurrentTimeSeconds, Mode=TwoWay}"/>
+                <TextBlock Grid.Column="2" Text="{Binding CurrentTimeText}" VerticalAlignment="Center" Width="64"/>
+            </Grid>
+        </Grid>
+
+</Window>

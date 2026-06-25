@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:simple_video.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="854"
+        d:DesignHeight="480"
+        Width="854"
+        Height="480"
+        MinWidth="472"
+        MinHeight="240"
+        x:Class="simple_video.Views.MediaWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="メディアウィンドウ">
+
+        <Design.DataContext>
+                <vm:MainWindowViewModel/>
+        </Design.DataContext>
+
+        <Grid RowDefinitions="Auto,Auto,*">
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="6" Margin="0,12,0,10">
+                        <Button Content="Video" Click="ImportVideoButton_Click"/>
+                        <Button Content="Image" Click="ImportImageButton_Click"/>
+                        <Button Content="Audio" Click="ImportAudioButton_Click"/>
+                </StackPanel>
+
+                <Separator Grid.Row="1"></Separator>
+
+                <ListBox Grid.Row="2"
+                        ItemsSource="{Binding MediaAssets}"
+                        SelectedItem="{Binding SelectedAsset, Mode=TwoWay}"
+                >
+                        <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:MediaAssetViewModel">
+                                <Grid ColumnDefinitions="54,*,Auto" Margin="4" MinHeight="44">
+                                        <Border Width="42" Height="28" CornerRadius="4" Background="#263241" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding KindLabel}" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Path}" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2" Text="{Binding DurationLabel}" VerticalAlignment="Center"/>
+                                </Grid>
+                                </DataTemplate>
+                        </ListBox.ItemTemplate>
+                </ListBox>
+        </Grid>
+
+</Window>

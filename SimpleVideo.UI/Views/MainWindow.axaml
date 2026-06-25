@@ -1,0 +1,202 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:simple_video.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="1280"
+        d:DesignHeight="820"
+        Width="1280"
+        Height="820"
+        MinWidth="1040"
+        MinHeight="680"
+        x:Class="simple_video.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Simple Video">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="Button">
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="Padding" Value="12,5"/>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="MinHeight" Value="32"/>
+        </Style>
+        <Style Selector="TextBlock.panel-title">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#F2F4F8"/>
+        </Style>
+        <Style Selector="Border.panel">
+            <Setter Property="Background" Value="#171A20"/>
+            <Setter Property="BorderBrush" Value="#2A2F38"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="48,*,220,28" Background="#101216">
+        <Border Grid.Row="0" Background="#151820" BorderBrush="#2A2F38" BorderThickness="0,0,0,1">
+            <DockPanel LastChildFill="False" Margin="12,0">
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Button Content="New" Command="{Binding NewProjectCommand}"/>
+                    <Button Content="Open" Click="OpenProjectButton_Click"/>
+                    <Button Content="Save" Click="SaveProjectButton_Click"/>
+                    <Button Content="Export"/>
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBlock Text="Project" Foreground="#9EA7B3" VerticalAlignment="Center"/>
+                    <TextBox Width="70" Text="{Binding ProjectWidth, Mode=TwoWay}"/>
+                    <TextBlock Text="x" Foreground="#6F7885" VerticalAlignment="Center"/>
+                    <TextBox Width="70" Text="{Binding ProjectHeight, Mode=TwoWay}"/>
+                    <TextBlock Text="FPS" Foreground="#9EA7B3" VerticalAlignment="Center"/>
+                    <TextBox Width="58" Text="{Binding ProjectFps, Mode=TwoWay}"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="1" ColumnDefinitions="280,*,300" Margin="12" ColumnSpacing="12">
+            <Border Grid.Column="0" Classes="panel" CornerRadius="6" Padding="12">
+                <Grid RowDefinitions="Auto,Auto,*">
+                    <TextBlock Classes="panel-title" Text="Media Library"/>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6" Margin="0,12,0,10">
+                        <Button Content="Video" Click="ImportVideoButton_Click"/>
+                        <Button Content="Image" Click="ImportImageButton_Click"/>
+                        <Button Content="Audio" Click="ImportAudioButton_Click"/>
+                    </StackPanel>
+
+                    <ListBox Grid.Row="2"
+                             ItemsSource="{Binding MediaAssets}"
+                             SelectedItem="{Binding SelectedAsset, Mode=TwoWay}"
+                             Background="#11141A"
+                             BorderBrush="#2A2F38">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:MediaAssetViewModel">
+                                <Grid ColumnDefinitions="54,*,Auto" Margin="4" MinHeight="44">
+                                    <Border Width="42" Height="28" CornerRadius="4" Background="#263241" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding KindLabel}" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#C9D4E3"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" Foreground="#F2F4F8" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Path}" Foreground="#7E8794" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="2" Text="{Binding DurationLabel}" Foreground="#9EA7B3" VerticalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="1" RowDefinitions="*,Auto">
+                <Border Classes="panel" CornerRadius="6" Padding="18">
+                    <Grid RowDefinitions="Auto,*,Auto">
+                        <DockPanel>
+                            <TextBlock Classes="panel-title" Text="Preview"/>
+                            <TextBlock DockPanel.Dock="Right" Text="{Binding ResolutionText}" Foreground="#9EA7B3"/>
+                        </DockPanel>
+
+                        <Border Grid.Row="1"
+                                Margin="0,14"
+                                Background="#050608"
+                                BorderBrush="#303743"
+                                BorderThickness="1"
+                                CornerRadius="4">
+                            <Grid>
+                                <Image Source="{Binding PreviewImage}"
+                                       Stretch="Uniform"
+                                       HorizontalAlignment="Stretch"
+                                       VerticalAlignment="Stretch"/>
+                                <Border Background="#70000000"
+                                        CornerRadius="4"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Margin="12"
+                                        Padding="8,4">
+                                    <TextBlock Text="{Binding CurrentTimeText}" Foreground="#F2F4F8" FontSize="13"/>
+                                </Border>
+                                <ProgressBar IsIndeterminate="True"
+                                             IsVisible="{Binding IsPreviewRendering}"
+                                             Height="3"
+                                             VerticalAlignment="Top"/>
+                            </Grid>
+                        </Border>
+
+                        <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Button Content="{Binding PlayPauseText}" Command="{Binding TogglePlaybackCommand}"/>
+                            <Slider Grid.Column="1"
+                                    Minimum="0"
+                                    Maximum="{Binding DurationSeconds}"
+                                    Value="{Binding CurrentTimeSeconds, Mode=TwoWay}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding CurrentTimeText}" Foreground="#DDE4EE" VerticalAlignment="Center" Width="64"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <Border Grid.Column="2" Classes="panel" CornerRadius="6" Padding="12">
+                <Grid RowDefinitions="Auto,Auto,Auto,*" RowSpacing="12">
+                    <TextBlock Classes="panel-title" Text="Inspector"/>
+                    <Button Grid.Row="1" Content="Add Selected To Timeline" Command="{Binding AddSelectedAssetToTimelineCommand}"/>
+
+                    <StackPanel Grid.Row="2" Spacing="8">
+                        <TextBlock Text="Text Clip" Foreground="#9EA7B3"/>
+                        <TextBox Text="{Binding NewText, Mode=TwoWay}" PlaceholderText="テロップ"/>
+                        <Button Content="Add Text" Command="{Binding AddTextClipCommand}"/>
+                        <Button Content="Add Background" Command="{Binding AddBackgroundClipCommand}"/>
+                    </StackPanel>
+
+                    <Border Grid.Row="3" Background="#11141A" BorderBrush="#2A2F38" BorderThickness="1" CornerRadius="4" Padding="10">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Project Rules" Foreground="#F2F4F8" FontWeight="SemiBold"/>
+                            <TextBlock Text="1 video track" Foreground="#9EA7B3"/>
+                            <TextBlock Text="1 text track" Foreground="#9EA7B3"/>
+                            <TextBlock Text="1 BGM track" Foreground="#9EA7B3"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="2" Margin="12,0,12,12" Classes="panel" CornerRadius="6" Padding="12">
+            <Grid RowDefinitions="Auto,Auto,*" RowSpacing="10">
+                <DockPanel>
+                    <TextBlock Classes="panel-title" Text="Timeline"/>
+                    <TextBlock DockPanel.Dock="Right" Text="{Binding CurrentTimeText}" Foreground="#9EA7B3"/>
+                </DockPanel>
+
+                <Slider Grid.Row="1"
+                        Minimum="0"
+                        Maximum="{Binding DurationSeconds}"
+                        Value="{Binding CurrentTimeSeconds, Mode=TwoWay}"/>
+
+                <ListBox Grid.Row="2"
+                         ItemsSource="{Binding TimelineClips}"
+                         Background="#11141A"
+                         BorderBrush="#2A2F38">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:TimelineClipViewModel">
+                            <Grid ColumnDefinitions="74,*,92,82" MinHeight="36" Margin="4">
+                                <TextBlock Text="{Binding TrackName}" Foreground="#DDE4EE" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <Border Grid.Column="1" Background="#23344C" CornerRadius="4" Padding="10,4" Margin="0,2">
+                                    <TextBlock Text="{Binding Label}" Foreground="#F2F4F8" TextTrimming="CharacterEllipsis"/>
+                                </Border>
+                                <TextBlock Grid.Column="2" Text="{Binding RangeLabel}" Foreground="#9EA7B3" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                <TextBlock Grid.Column="3" Text="{Binding DurationSeconds, StringFormat={}{0:0.0}s}" Foreground="#9EA7B3" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="3" Background="#151820" BorderBrush="#2A2F38" BorderThickness="0,1,0,0" Padding="12,0">
+            <TextBlock Text="{Binding StatusMessage}" Foreground="#9EA7B3" VerticalAlignment="Center"/>
+        </Border>
+    </Grid>
+</Window>
