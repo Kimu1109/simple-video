@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/SimpleVideo.Tests/SimpleVideo.Tests.csproj" />
+  </Folder>
+  <Project Path="SimpleVideo.Audio/SimpleVideo.Audio.csproj" />
+  <Project Path="SimpleVideo.Core/SimpleVideo.Core.csproj" />
+  <Project Path="SimpleVideo.Encoding/SimpleVideo.Encoding.csproj" />
+  <Project Path="SimpleVideo.Infrastructure/SimpleVideo.Infrastructure.csproj" />
+  <Project Path="SimpleVideo.Media/SimpleVideo.Media.csproj" />
+  <Project Path="SimpleVideo.Rendering/SimpleVideo.Rendering.csproj" />
+  <Project Path="SimpleVideo.UI/SimpleVideo.UI.csproj" />
+</Solution>
